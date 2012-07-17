@@ -1,0 +1,15 @@
+body {background-color:#eee;}
+h2 {font-size: 24pt;}
+h3 {font-size: 18pt; margin-bottom: 10px;}
+.ui-progressbar { height:2em; text-align: left; border: 1px solid #000;}
+.ui-progressbar .ui-progressbar-value {height:100%; background-color: #08C }
+ol {font-size: 14pt; margin-top: 20px;}
+ol li {margin-bottom: 10px;}
+ol a.delete { float:right;}
+a {cursor:pointer;}
+.modal h4 {margin-bottom: 10px;}
+.page-header {margin: 20px 0px 0px 0px; border-bottom:none}
+.page-header a {margin-left: 10px;}
+.dropdown-menu {max-width: 100%;}
+ul#topSongs {list-style:none; font-size:14px; margin-top: 10px}
+ul#topSongs li {margin-left:-22px}

@@ -1,0 +1,32 @@
+- scripts.push("/javascripts/bootstrap.modal.min.js")
+- scripts.push("/javascripts/home.js")
+- styles.push("/stylesheets/bootstrap.modal.min.css")
+- styles.push("/stylesheets/home.css")
+
+div(class="container-fluid")
+  header
+    p Request songs for a jukebox!
+    
+    form(action='/join', method='POST')
+      input(type='text', name='room', id="jukeboxId", placeholder="Enter a Jukebox ID", class="span-fluid")
+      button(type='submit', class="button-primary btn-large") Request songs
+      
+  div(id="content")
+    div(class="row")
+      div(class="span4")
+        h2 Integrated with Rdio&trade;
+        p Simply connect your Rdio&trade; account, no additional sign up required.
+      div(class="span4")
+        h2 Millions of songs
+        p Songs added every Tuesday
+      div(class="span4")
+        h2 Enjoy your party
+        p No more fiddling with music during your party, guests queue songs
+  div(id="footer", class="container")
+    ul
+      li 
+        a(href="/about") About
+      li
+        a(href="http://blog.twtbox.com") Blog
+      li
+        a(href="http://www.twitter.com/twtbox") Twitter

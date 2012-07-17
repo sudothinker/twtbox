@@ -1,0 +1,45 @@
+- scripts.push("/javascripts/bootstrap.modal.min.js")
+- scripts.push("/javascripts/home.js")
+- styles.push("/stylesheets/bootstrap.modal.min.css")
+- styles.push("/stylesheets/home.css")
+- title = "Twtbox - Your own personal jukebox"
+
+div(class="wrapper")
+  header
+    div(class="container")
+      img(src="/images/diag.png", class="hero", alt="Twtbox")
+      p Instantly create a jukebox for your home, office or party!
+  div(id="content", class="container")
+    div(class="button-primaries")
+      a(href="/create", title="Create a jukebox", class="button-primary") Create a Jukebox
+      a(href='#joinModal', title="Request songs", class="button-primary join", data-toggle="modal") Request songs
+    div(class="row")
+      div(class="span4")
+        h2 Integrated with Rdio&reg;
+        p Simply connect your Rdio&reg; account, no additional sign up required
+      div(class="span4")
+        h2 Millions of songs
+        p More songs added every Tuesday
+      div(class="span4")
+        h2 Enjoy your party
+        p No more fiddling with music during your party, guests queue songs
+  div(id="footer", class="container")
+    ul
+      li 
+        a(href="/about", title="About") About
+      li
+        a(href="http://blog.twtbox.com", title="Blog") Blog
+      li
+        a(href="http://www.twitter.com/twtbox", title="Twitter") Twitter
+        
+div(id="joinModal", class="modal", style="display:none")
+  form(action='/join', method='POST')
+    div(class="modal-header")
+      h3 Enter a Jukebox ID to request songs
+
+    div(class="modal-body")
+      input(type='text', name='room', id="jukeboxId", placeholder="Enter a Jukebox ID", class="span6")
+
+    div(class="modal-footer")
+      button(type='submit', class="btn btn-primary btn-large") Join Jukebox
+      button(class="btn btn-secondary btn-large close", data-dismiss="modal") Close

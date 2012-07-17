@@ -1,0 +1,21 @@
+!!!
+html
+  head
+    title Party Box - Jukebox
+    script(src='http://code.jquery.com/jquery-1.4.4.min.js')
+    script(src="http://code.jquery.com/mobile/1.0a4.1/jquery.mobile-1.0a4.1.js")
+    link(rel='stylesheet', href="http://code.jquery.com/mobile/1.0a4.1/jquery.mobile-1.0a4.1.css")
+    link(rel='stylesheet', href='/stylesheets/mobile.css')
+    link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Droid+Serif')
+    link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Droid+Sans')
+    link(rel='stylesheet', href='http://fonts.googleapis.com/css?family=Paytone+One:regular')
+    - styles.map(function(style) {
+      link(rel='stylesheet', href=style)
+    - })
+    
+    - scripts.map(function(script) {    
+      script(src=script)
+    - })
+  body
+    div(data-role="page")
+      !=body

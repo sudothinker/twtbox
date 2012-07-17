@@ -1,0 +1,32 @@
+!!!
+html
+  head
+    title 
+      !=title
+    meta(name="title", content="Twtbox - Your own personal jukebox")
+    meta(name="description", content="Instantly create a streaming jukebox for your home, office or party!")
+    meta(name="keywords", content="jukebox, rdio, twitter, tweet")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js')
+    
+    - styles.map(function(style) {
+      link(rel='stylesheet', href=style)
+    - })
+    
+    - scripts.map(function(script) {    
+      script(src=script)
+    - })
+    script
+      var mpq=[];mpq.push(["init","f5b01baad731fa1f37a2fd7be9a1de44"]);(function(){var b,a,e,d,c;b=document.createElement("script");b.type="text/javascript";b.async=true;b.src=(document.location.protocol==="https:"?"https:":"http:")+"//api.mixpanel.com/site_media/js/api/mixpanel.js";a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(b,a);e=function(f){return function(){mpq.push([f].concat(Array.prototype.slice.call(arguments,0)))}};d=["init","track","track_links","track_forms","register","register_once","identify","name_tag","set_config"];for(c=0;c<d.length;c++){mpq[d[c]]=e(d[c])}})();
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-460129-10']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  body
+    !=body
+  
+  

@@ -1,0 +1,73 @@
+- scripts.push("/socket.io/socket.io.js")
+- scripts.push("/javascripts/bootstrap.min.js")
+- scripts.push("/javascripts/bootstrap-typeahead.js")
+- scripts.push("/javascripts/bootstrap-alert.js")
+- scripts.push("/javascripts/jquery.ajaxmanager.js")
+- styles.push("/stylesheets/bootstrap.min.css")
+- styles.push("/stylesheets/queue.css")
+- title = "Request for jukebox " + room + " on Twtbox"
+script
+  var socket = io.connect();
+  var room = '!{room}';
+
+  $(document).ready(function() {
+    var ajaxManager = $.manageAjax.create("searchQueue", {
+      queue: true,
+      cacheResponse: true,
+      abortOld: true
+    });
+    
+    var queuedSong = function() {
+      ajaxManager.clear(true);
+      $('#query').attr('value', '');
+      $(".alert-success").alert().show();
+      window.setTimeout(function() { $(".alert-success").alert().hide(); }, 4000);
+    };
+    
+    $('#queueForm').submit(function() {
+      socket.emit("queue", {"song": {"title": $('#query').val()}, "room": $('#room').val()});
+      queuedSong();
+      return false;
+    });
+    
+    $('.typeahead').typeahead({
+      items: 10,
+      source: function(typeahead, query) {
+        if (query.length > 3) {
+          ajaxManager.clear(true);
+          ajaxManager.add({
+            url: "/suggestions",
+            data: "query="+encodeURI(query),
+            success: function(data) {
+              typeahead.process(data);
+            }
+          });
+        }
+      },
+      onselect: function(obj) {
+        if (obj.trackKeys) { // queue the album
+          _.each(obj.trackKeys, function(key) {
+            socket.emit("queue", {"song": {"key": key}, "room": $('#room').val()});
+          });
+        } else {
+          socket.emit("queue", {"song": {"key": obj.key}, "room": $('#room').val()});
+        }
+        queuedSong();
+        return false;
+      }
+    });
+  });
+
+div(class="container-fluid")
+  div(class="page-header")
+    h1
+      ="Request song for jukebox: " + room
+    
+  div(class="row-fluid")
+    div(class="span12")
+      div(class="alert alert-success", style="display:none")
+        span Successfully queued song
+      
+      form(action='/queue', id="queueForm", class="form-search", method='POST', data-role="fieldcontain")
+        input(type='hidden', name='room', id="room", value=room)
+        input(type='text', name='twtboxquery', id="query", class="typeahead span12", placeholder="Search for songs")

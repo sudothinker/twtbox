@@ -1,0 +1,21 @@
+{
+  "name": "twtbox",
+  "version": "0.0.1",
+  "repository": {},
+  "directories": {
+    "lib": ""
+  },
+  "engines": {
+    "node": "0.6.12",
+    "npm":  "1.1.4"
+  },
+  "dependencies": {    
+    "express": "2.5.8",
+    "connect": "1.8.5",
+    "jade":"0.10.4",
+    "redis":"0.5.7",
+    "socket.io":"0.9.0",
+    "mixpanel":"0.0.3",
+    "underscore":"1.1.6"
+  }
+}

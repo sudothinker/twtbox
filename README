@@ -1,3 +1,14 @@
 A Collaborative Rdio Jukebox
 
 twtbox.com
+
+##Installation
+
+heroku create
+heroku addons:add redistogo:nano
+heroku config:add REDISTOGO_URL=redis://redistogo:password@redistogo.com:8000/
+heroku config:add HEROKU_URL=http://appname.herokuapp.com
+heroku config:add RDIO_API_KEY=xxx
+heroku config:add RDIO_API_SECRET=xxx
+git push heroku master
+heroku open

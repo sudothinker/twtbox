@@ -20,37 +20,37 @@ script
   function sendPlay() {
     socket.emit("play", {room: room, song: playingSong.attributes});
   };
-  
+
   window.onbeforeunload = function() {
     return "Closing this window will stop the music and erase the Jukebox forever.";
   }
-  
+
   $(document).ready(function() {
     $('#apiswf').rdio('#{playbackToken}')
     $('#apiswf').bind('ready.rdio', function() {
-       playingSong = new Song(!{song});           
+       playingSong = new Song(!{song});
        if (playingSong.get('key') == undefined) {
          playingSong = null;
-       } else {       
+       } else {
          $('#apiswf').rdio().play(playingSong.get('key'));
          if (offset == 0) // only update if we are the one triggering the song
            sendPlay();
        }
     });
-    
+
     var ajaxManager = $.manageAjax.create("searchQueue", {
       queue: true,
       cacheResponse: true,
       abortOld: true
     });
-    
+
     $('#queueForm').submit(function() {
       socket.emit("queue", {"song": {"title": $('#query').val()}, "room": $('#room').val()});
       ajaxManager.clear(true);
       $('#query').attr('value', '');
       return false;
     });
-    
+
     $('.typeahead').typeahead({
       items: 10,
       source: function(typeahead, query) {
@@ -73,7 +73,7 @@ script
         } else {
           socket.emit("queue", {"song": {"key": obj.key}, "room": $('#room').val()});
         }
-        
+
         $('#query').attr('value', '');
         ajaxManager.clear(true);
         return false;
@@ -85,46 +85,46 @@ div(class="container")
   div(class="page-header")
     a(class="btn btn-small pull-right", href="#settingsModal", data-toggle="modal")
       i(class="icon-cog")
-      |  Settings  
-    a(class="btn btn-small pull-right", href="#helpModal", data-toggle="modal") Help 
-    
-    h2 
+      |  Settings
+    a(class="btn btn-small pull-right", href="#helpModal", data-toggle="modal") Help
+
+    h2
       ="Jukebox ID: " + room + ""
-       
+
   div(class="row")
     div(class="span8")
       div(id='apiswf')
 
-      //a(id="play") 
+      //a(id="play")
       //  img(src="/images/audio/orange_play_32x32.png", alt="Play", class="audio")
-      //a(id="pause", style="display:none") 
+      //a(id="pause", style="display:none")
       //  img(src="/images/audio/orange_pause_32x32.png", alt="Pause", class="audio")
-      
-      h3(id="currentSong") No songs queued: 
+
+      h3(id="currentSong") No songs queued:
         a(onclick="$('#query').focus();", title="Queue song", href="") Queue one up
 
       div(id="progressbar")
 
       script(type="text/template", id="song-template")
         <%= name %> - <%= artist %>
-        a(class="delete", title="Delete") X
+        a(class="delete", title="Delete") ×
 
       ol(id="queue")
-  
+
     div(class="span4")
       h3 Queue song
       form(action='/queue', id="queueForm", class="form-search", method='POST', data-role="fieldcontain")
         input(type='hidden', name='room', id="room", value=room)
         input(type='text', name='twtboxquery', id="query", class="typeahead span4", placeholder="Search for songs")
-        
+
       h3 Top songs
         ul(id="topSongs")
-      
+
 div(id="settingsModal", class="modal", style="display:none")
   form(action="/name", method="POST")
     div(class="modal-header")
       h3 Settings
-      
+
     div(class="modal-body")
       label Jukebox ID
       input(type="text", name="twtboxname", value=room)
@@ -132,25 +132,25 @@ div(id="settingsModal", class="modal", style="display:none")
     div(class="modal-footer")
       button(type="submit", class="btn btn-primary btn-large") Save
       button(class="btn btn-secondary btn-large close", data-dismiss="modal") Close
-    
+
 div(id="helpModal", class="modal", style="display:none")
   div(class="modal-header")
     h3 Help
   div(class="modal-body")
     h4 What is this all about?
-    p 
-      | Twtbox is a personal Jukebox. It lets you create a jukebox 
+    p
+      | Twtbox is a personal Jukebox. It lets you create a jukebox
       | in your browser and then queue songs from any device with a web browser.
     p
       | Twtbox is great for parties - your guests can queue songs from their smartphones
       | and you can enjoy the party!
 
-    h4 How do my friends queue songs?    
-    p 
+    h4 How do my friends queue songs?
+    p
       | Tell them to go to
-      a(target="_blank", href="http://twtbox.com") twtbox.com 
+      a(target="_blank", href="http://twtbox.com") twtbox.com
       | on their smartphone and enter Jukebox ID:
       =room
 
   div(class="modal-footer")
-    button(class="btn btn-primary btn-large close", data-dismiss="modal") Close    
+    button(class="btn btn-primary btn-large close", data-dismiss="modal") Close

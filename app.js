@@ -1,3 +1,13 @@
+# Description:
+#   None
+#
+# Configuration:
+#   REDISTOGO_URL
+#   HEROKU_URL
+#   RDIO_API_KEY
+#   RDIO_API_SECRET
+#   
+
 var express = require('express');
 var sys = require('sys');
 var io = require('socket.io');
@@ -7,31 +17,26 @@ var RedisStore = require('./my-connect-redis');
 
 var app = module.exports = express.createServer(express.logger());
 
-var domain, mp_client, redisHost, redisPort, redisPass;
+var domain, mp_client, redisHost, redisPort, redisPass, rclient;
+
+var Redis = require('redis');
+var Url = require('url');
+
 app.configure('development', function(){
-  redisHost = "filefish.redistogo.com";
-  redisPort = 9734;
-  redisPass = ""; // TODO: add the redis config. Removed for security
-  domain = "http://localhost:3000";
+  info = Url.parse(process.env.REDISTOGO_URL || 'redis://localhost:6379');
+  rclient = Redis.createClient(info.port, info.hostname);
+  if(info.auth) {
+    rclient.auth(info.auth.split(":")[1]);
+  }
+  domain = process.env.HEROKU_URL || "http://localhost:3000";
   mp_client = new mixpanel.Client("8c587841d6590b8d46ca00197d8339a0");
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });
 
 app.configure('production', function(){
-  redisHost = "carp.redistogo.com";
-  redisPort = 9069;
-  redisPass = ""; // TODO: add the redis config. Removed for security
-  domain = "http://twtbox.com";
   mp_client = new mixpanel.Client("f5b01baad731fa1f37a2fd7be9a1de44");
   app.use(express.errorHandler()); 
 });
-
-var redis = require('redis');
-var rclient = redis.createClient(redisPort, redisHost);
-var dbAuth = function() { rclient.auth(redisPass); }
-rclient.addListener('connected', dbAuth);
-rclient.addListener('reconnected', dbAuth);
-dbAuth();
 
 app.configure(function(){
   app.set('views', __dirname + '/views');
@@ -40,7 +45,7 @@ app.configure(function(){
   app.use(express.methodOverride());
   app.use(express.compiler({ src: __dirname + '/public', enable: ['less'] }));
   app.use(express.cookieParser());
-  app.use(express.session({ store: new RedisStore({port: redisPort, host: redisHost, password: redisPass}), secret: '' })); // TODO: Add secret, removed for security
+  app.use(express.session({ store: new RedisStore({client: rclient}), secret: 'test' })); // TODO: Add secret, removed for security
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
 });
@@ -52,7 +57,7 @@ app.dynamicHelpers({
 var socket = io.listen(app);
 var OAuth = require('./oauth').OAuth;
 var oa = new OAuth("http://api.rdio.com/oauth/request_token", "http://api.rdio.com/oauth/access_token",
-                  "", "", // TODO: Add the rdio oauth tokens. Removed for security
+                  process.env.RDIO_API_KEY, process.env.RDIO_API_SECRET, // TODO: Add the rdio oauth tokens. Removed for security
                   "1.0", domain + "/callback", "HMAC-SHA1");                  
 var rdioEndpoint = "http://api.rdio.com/1/";
 

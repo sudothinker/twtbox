@@ -17,7 +17,7 @@ var RedisStore = require('connect-redis')(express);
 
 var app = module.exports = express.createServer(express.logger());
 
-var domain, mp_client, redisHost, redisPort, redisPass, rclient;
+var domain, mp_client, hostname, redisHost, redisPort, redisPass, rclient;
 
 var Redis = require('redis');
 var Url = require('url');
@@ -28,6 +28,7 @@ var Url = require('url');
     rclient.auth(info.auth.split(":")[1]);
   }
   domain = process.env.HEROKU_URL || "http://localhost:3000";
+  hostname = Url.parse(domain).hostname;
 
 app.configure('development', function(){  
   mp_client = new mixpanel.Client("8c587841d6590b8d46ca00197d8339a0");
@@ -154,7 +155,7 @@ app.get("/topsongs.json", adminRequired, function(req, res, next) {
 // admin view of room
 app.get('/r/:room', adminRequired, function(req, res, next) {
   oa.post(rdioEndpoint, req.session.oauth_access_token, req.session.oauth_access_token_secret, 
-    { "method" : "getPlaybackToken", "domain" : "twtbox.com" }, function (error, data) {
+    { "method" : "getPlaybackToken", "domain" : "infinite-sierra-8002.herokuapp.com" }, function (error, data) {
     var playbackToken = domain == "http://localhost:3000" ? "GAlNi78J_____zlyYWs5ZG02N2pkaHlhcWsyOWJtYjkyN2xvY2FsaG9zdEbwl7EHvbylWSWFWYMZwfc=" : JSON.parse(data)["result"];    
     
     var renderRoom = function(res, song, offset, playbackToken, domain) {

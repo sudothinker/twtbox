@@ -155,7 +155,7 @@ app.get("/topsongs.json", adminRequired, function(req, res, next) {
 // admin view of room
 app.get('/r/:room', adminRequired, function(req, res, next) {
   oa.post(rdioEndpoint, req.session.oauth_access_token, req.session.oauth_access_token_secret, 
-    { "method" : "getPlaybackToken", "domain" : "infinite-sierra-8002.herokuapp.com" }, function (error, data) {
+    { "method" : "getPlaybackToken", "domain" : hostname }, function (error, data) {
     var playbackToken = domain == "http://localhost:3000" ? "GAlNi78J_____zlyYWs5ZG02N2pkaHlhcWsyOWJtYjkyN2xvY2FsaG9zdEbwl7EHvbylWSWFWYMZwfc=" : JSON.parse(data)["result"];    
     
     var renderRoom = function(res, song, offset, playbackToken, domain) {

@@ -13,7 +13,7 @@ var sys = require('sys');
 var io = require('socket.io');
 var mixpanel = require('mixpanel');
 var _ = require('underscore');
-var RedisStore = require('./my-connect-redis');
+var RedisStore = require('connect-redis')(express);
 
 var app = module.exports = express.createServer(express.logger());
 

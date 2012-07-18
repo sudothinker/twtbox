@@ -22,13 +22,16 @@ var domain, mp_client, redisHost, redisPort, redisPass, rclient;
 var Redis = require('redis');
 var Url = require('url');
 
-app.configure('development', function(){
+app.configure(function(){
   info = Url.parse(process.env.REDISTOGO_URL || 'redis://localhost:6379');
   rclient = Redis.createClient(info.port, info.hostname);
   if(info.auth) {
     rclient.auth(info.auth.split(":")[1]);
   }
   domain = process.env.HEROKU_URL || "http://localhost:3000";
+});
+
+app.configure('development', function(){  
   mp_client = new mixpanel.Client("8c587841d6590b8d46ca00197d8339a0");
   app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 });

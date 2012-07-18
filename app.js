@@ -1,12 +1,12 @@
-# Description:
-#   None
-#
-# Configuration:
-#   REDISTOGO_URL
-#   HEROKU_URL
-#   RDIO_API_KEY
-#   RDIO_API_SECRET
-#   
+// Description:
+//   None
+//
+// Configuration:
+//   REDISTOGO_URL
+//   HEROKU_URL
+//   RDIO_API_KEY
+//   RDIO_API_SECRET
+//   
 
 var express = require('express');
 var sys = require('sys');

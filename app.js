@@ -24,7 +24,7 @@ var Url = require('url');
 
 app.configure(function(){
   info = Url.parse(process.env.REDISTOGO_URL || 'redis://localhost:6379');
-  console.log(process.env.REDISTOGO_URL);
+  console.log(info);
   rclient = Redis.createClient(info.port, info.hostname);
   if(info.auth) {
     rclient.auth(info.auth.split(":")[1]);

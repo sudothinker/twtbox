@@ -3,7 +3,7 @@ var crypto= require('crypto'),
     http= require('http'),
     https= require('https'),
     URL= require('url'),
-    querystring= require('querystring'); 
+    querystring= require('querystring');
 
 exports.OAuth= function(requestUrl, accessUrl, consumerKey, consumerSecret, version, authorize_callback, signatureMethod, nonceSize, customHeaders) {
   this._requestUrl= requestUrl;
@@ -59,7 +59,7 @@ exports.OAuth.prototype._getSignature= function(method, url, parameters, tokenSe
 exports.OAuth.prototype._normalizeUrl= function(url) {
   var parsedUrl= URL.parse(url, true)
    var port ="";
-   if( parsedUrl.port ) { 
+   if( parsedUrl.port ) {
      if( (parsedUrl.protocol == "http:" && parsedUrl.port != "80" ) ||
          (parsedUrl.protocol == "https:" && parsedUrl.port != "443") ) {
            port= ":" + parsedUrl.port;
@@ -67,7 +67,7 @@ exports.OAuth.prototype._normalizeUrl= function(url) {
    }
 
   if( !parsedUrl.pathname  || parsedUrl.pathname == "" ) parsedUrl.pathname ="/";
-   
+
   return parsedUrl.protocol + "//" + parsedUrl.hostname + port + parsedUrl.pathname;
 }
 
@@ -111,17 +111,17 @@ exports.OAuth.prototype._makeArrayOfArgumentsHash= function(argumentsHash) {
          argument_pairs[argument_pairs.length]= [key, value];
        }
   }
-  return argument_pairs;  
-} 
+  return argument_pairs;
+}
 
 // Sorts the encoded key value pairs by encoded name, then encoded value
 exports.OAuth.prototype._sortRequestParams= function(argument_pairs) {
   // Sort by name, then value.
   argument_pairs.sort(function(a,b) {
       if ( a[0]== b[0] )  {
-        return a[1] < b[1] ? -1 : 1; 
+        return a[1] < b[1] ? -1 : 1;
       }
-      else return a[0] < b[0] ? -1 : 1;  
+      else return a[0] < b[0] ? -1 : 1;
   });
 
   return argument_pairs;
@@ -134,10 +134,10 @@ exports.OAuth.prototype._normaliseRequestParams= function(arguments) {
     argument_pairs[i][0]= this._encodeData( argument_pairs[i][0] );
     argument_pairs[i][1]= this._encodeData( argument_pairs[i][1] );
   }
-  
+
   // Then sort them #3.4.1.3.2 .2
   argument_pairs= this._sortRequestParams( argument_pairs );
-  
+
   // Then concatenate together #3.4.1.3.2 .3 & .4
   var args= "";
   for(var i=0;i<argument_pairs.length;i++) {
@@ -145,19 +145,19 @@ exports.OAuth.prototype._normaliseRequestParams= function(arguments) {
       args+= "="
       args+= argument_pairs[i][1];
       if( i < argument_pairs.length-1 ) args+= "&";
-  }     
+  }
   return args;
 }
 
 exports.OAuth.prototype._createSignatureBase= function(method, url, parameters) {
-  url= this._encodeData( this._normalizeUrl(url) ); 
+  url= this._encodeData( this._normalizeUrl(url) );
   parameters= this._encodeData( parameters );
   return method.toUpperCase() + "&" + url + "&" + parameters;
 }
 
 exports.OAuth.prototype._createSignature= function(signatureBase, tokenSecret) {
    if( tokenSecret === undefined ) var tokenSecret= "";
-   else tokenSecret= this._encodeData( tokenSecret ); 
+   else tokenSecret= this._encodeData( tokenSecret );
    // consumerSecret is already encoded
    var key= this._consumerSecret + "&" + tokenSecret;
 
@@ -170,10 +170,10 @@ exports.OAuth.prototype._createSignature= function(signatureBase, tokenSecret) {
          hash = crypto.createHmac("sha1", key).update(signatureBase).digest("base64");
        }
        else {
-         hash= sha1.HMACSHA1(key, signatureBase);  
+         hash= sha1.HMACSHA1(key, signatureBase);
        }
    }
-   return hash;    
+   return hash;
 }
 exports.OAuth.prototype.NONCE_CHARS= ['a','b','c','d','e','f','g','h','i','j','k','l','m','n',
               'o','p','q','r','s','t','u','v','w','x','y','z','A','B',
@@ -186,7 +186,7 @@ exports.OAuth.prototype._getNonce= function(nonceSize) {
    var chars= this.NONCE_CHARS;
    var char_pos;
    var nonce_chars_length= chars.length;
-   
+
    for (var i = 0; i < nonceSize; i++) {
        char_pos= Math.floor(Math.random() * nonce_chars_length);
        result[i]=  chars[char_pos];
@@ -208,7 +208,7 @@ exports.OAuth.prototype._createClient= function( port, hostname, method, path, h
   } else {
     httpModel= http;
   }
-  return httpModel.request(options);     
+  return httpModel.request(options);
 }
 
 exports.OAuth.prototype._prepareParameters= function( oauth_token, oauth_token_secret, method, url, extra_params ) {
@@ -285,7 +285,7 @@ exports.OAuth.prototype._performSecureRequest= function( oauth_token, oauth_toke
 
   headers["Content-length"]= post_body ? post_body.length : 0; //Probably going to fail if not posting ascii
   headers["Content-Type"]= post_content_type;
-   
+
   var path;
   if( !parsedUrl.pathname  || parsedUrl.pathname == "" ) parsedUrl.pathname ="/";
   if( parsedUrl.query ) path= parsedUrl.pathname + "?"+ parsedUrl.query ;
@@ -300,7 +300,7 @@ exports.OAuth.prototype._performSecureRequest= function( oauth_token, oauth_toke
   }
 
   if( callback ) {
-    var data=""; 
+    var data="";
     var self= this;
     request.on('response', function (response) {
       response.setEncoding('utf8');
@@ -315,9 +315,9 @@ exports.OAuth.prototype._performSecureRequest= function( oauth_token, oauth_toke
         }
       });
     });
-  
+
     request.on("error", callback);
-    
+
     if( (method == "POST" || method =="PUT") && post_body != null && post_body != "" ) {
       request.write(post_body);
     }
@@ -329,7 +329,7 @@ exports.OAuth.prototype._performSecureRequest= function( oauth_token, oauth_toke
     }
     return request;
   }
-  
+
   return;
 }
 
@@ -340,7 +340,7 @@ exports.OAuth.prototype.getOAuthAccessToken= function(oauth_token, oauth_token_s
   } else {
     extraParams.oauth_verifier= oauth_verifier;
   }
-  
+
    this._performSecureRequest( oauth_token, oauth_token_secret, "POST", this._accessUrl, extraParams, null, null, function(error, data, response) {
          if( error ) callback(error);
          else {
@@ -380,7 +380,7 @@ exports.OAuth.prototype._putOrPost= function(method, url, oauth_token, oauth_tok
   }
   return this._performSecureRequest( oauth_token, oauth_token_secret, method, url, extra_params, post_body, post_content_type, callback );
 }
- 
+
 
 exports.OAuth.prototype.put= function(url, oauth_token, oauth_token_secret, post_body, post_content_type, callback) {
   return this._putOrPost("PUT", url, oauth_token, oauth_token_secret, post_body, post_content_type, callback);
@@ -396,7 +396,7 @@ exports.OAuth.prototype.getOAuthRequestToken= function(extraParams, callback) {
     extraParams = {};
   }
 
-  // Callbacks are 1.0A related 
+  // Callbacks are 1.0A related
   if( this._authorize_callback ) {
     extraParams["oauth_callback"]= this._authorize_callback;
   }
@@ -423,12 +423,12 @@ exports.OAuth.prototype.signUrl= function(url, oauth_token, oauth_token_secret, 
   var orderedParameters= this._prepareParameters(oauth_token, oauth_token_secret, method, url, {});
   var parsedUrl= URL.parse( url, false );
 
-  var query=""; 
+  var query="";
   for( var i= 0 ; i < orderedParameters.length; i++) {
     query+= orderedParameters[i][0]+"="+ this._encodeData(orderedParameters[i][1]) + "&";
   }
   query= query.substring(0, query.length-1);
- 
+
   return parsedUrl.protocol + "//"+ parsedUrl.host + parsedUrl.pathname + "?" + query;
 };
 

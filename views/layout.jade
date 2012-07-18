@@ -1,19 +1,19 @@
 !!!
 html
   head
-    title 
+    title
       !=title
     meta(name="title", content="Twtbox - Your own personal jukebox")
     meta(name="description", content="Instantly create a streaming jukebox for your home, office or party!")
     meta(name="keywords", content="jukebox, rdio, twitter, tweet")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js')
-    
+
     - styles.map(function(style) {
       link(rel='stylesheet', href=style)
     - })
-    
-    - scripts.map(function(script) {    
+
+    - scripts.map(function(script) {
       script(src=script)
     - })
     script
@@ -28,5 +28,3 @@ html
       })();
   body
     !=body
-  
-  

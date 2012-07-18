@@ -28,13 +28,13 @@ var oneDay = 86400;
 var RedisStore = module.exports = function RedisStore(options) {
   options = options || {};
   Store.call(this, options);
-  
+
   this.client = redis.createClient(options.port, options.host);
   var dbAuth = function(client) { client.auth(options.password); }
   this.client.addListener('connected', dbAuth);
   this.client.addListener('reconnected', dbAuth);
   dbAuth(this.client);
-  
+
 };
 
 /**
@@ -58,7 +58,7 @@ RedisStore.prototype.get = function(sid, fn){
       fn(null, JSON.parse(data.toString()));
     } catch (err) {
       fn(err);
-    } 
+    }
   });
 };
 
@@ -83,7 +83,7 @@ RedisStore.prototype.set = function(sid, sess, fn){
     });
   } catch (err) {
     fn && fn(err);
-  } 
+  }
 };
 
 /**

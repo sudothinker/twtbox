@@ -6,11 +6,11 @@
 div(class="container-fluid")
   header
     p Request songs for a jukebox!
-    
+
     form(action='/join', method='POST')
       input(type='text', name='room', id="jukeboxId", placeholder="Enter a Jukebox ID", class="span-fluid")
       button(type='submit', class="button-primary btn-large") Request songs
-      
+
   div(id="content")
     div(class="row")
       div(class="span4")
@@ -24,7 +24,7 @@ div(class="container-fluid")
         p No more fiddling with music during your party, guests queue songs
   div(id="footer", class="container")
     ul
-      li 
+      li
         a(href="/about") About
       li
         a(href="http://blog.twtbox.com") Blog

@@ -16,20 +16,20 @@ script
       cacheResponse: true,
       abortOld: true
     });
-    
+
     var queuedSong = function() {
       ajaxManager.clear(true);
       $('#query').attr('value', '');
       $(".alert-success").alert().show();
       window.setTimeout(function() { $(".alert-success").alert().hide(); }, 4000);
     };
-    
+
     $('#queueForm').submit(function() {
       socket.emit("queue", {"song": {"title": $('#query').val()}, "room": $('#room').val()});
       queuedSong();
       return false;
     });
-    
+
     $('.typeahead').typeahead({
       items: 10,
       source: function(typeahead, query) {
@@ -62,12 +62,12 @@ div(class="container-fluid")
   div(class="page-header")
     h1
       ="Request song for jukebox: " + room
-    
+
   div(class="row-fluid")
     div(class="span12")
       div(class="alert alert-success", style="display:none")
         span Successfully queued song
-      
+
       form(action='/queue', id="queueForm", class="form-search", method='POST', data-role="fieldcontain")
         input(type='hidden', name='room', id="room", value=room)
         input(type='text', name='twtboxquery', id="query", class="typeahead span12", placeholder="Search for songs")

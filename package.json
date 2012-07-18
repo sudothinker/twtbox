@@ -9,7 +9,7 @@
     "node": "0.6.12",
     "npm":  "1.1.4"
   },
-  "dependencies": {    
+  "dependencies": {
     "express": "2.5.8",
     "connect": "1.8.5",
     "jade":"0.10.4",

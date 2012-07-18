@@ -8,7 +8,7 @@ $(document).ready(function() {
       socket.emit("next", {"room": room});
     }
   });
-  
+
   $('#apiswf').bind('playStateChanged.rdio', function(e, playState) {
      if(playState == 1) { // playing
        $('#pause').show();
@@ -40,7 +40,7 @@ $(document).ready(function() {
   socket.on("queued", function(data) { // Another client queued a song
     if (data.room == room) { // Only do something if this queue is for us, data queued will be broadcasted to everyone
       // potential performance problem here, but easier than keep track of clients and sending it to specific ones.
-      if (Queue.length == 0 && playingSong == null) { 
+      if (Queue.length == 0 && playingSong == null) {
         // we aren't playing anything right now, and there is nothing queued
         socket.emit("next", {room: room});
       } else {
@@ -58,7 +58,7 @@ $(document).ready(function() {
       $('#currentSong').text('No songs queued');
     }
   });
-  
+
   $('#progressbar').progressbar({value: 0});
   $('#mute').click(function() {
     $('#apiswf').rdio_setMute(true);
@@ -72,9 +72,9 @@ $(document).ready(function() {
   $('#pause').click(function() {
     $('#apiswf').rdio().pause();
   });
-  
+
   $.get("/topsongs.json", function(response) {
-    _.each(response, function(song) {      
+    _.each(response, function(song) {
       $('#topSongs').append("<li><a href=\"\" data-key=\"" + song.key + "\" class=\"topSong\">" + song.name + " - " + song.artist + "</a></li>");
     });
     $('.topSong').click(function() {
@@ -82,7 +82,7 @@ $(document).ready(function() {
       return false;
     })
   });
-  // $.get("http://api.bitly.com/v3/shorten?login=sudothinker&apiKey=R_16070e6ca4daade9543bdaee2c120637&format=json&longUrl=" + 
+  // $.get("http://api.bitly.com/v3/shorten?login=sudothinker&apiKey=R_16070e6ca4daade9543bdaee2c120637&format=json&longUrl=" +
   //   escape(window.location + "/q"), function(data) {
   //   var shortUrl = data.data.url;
   //   $("#share-url").text(shortUrl);

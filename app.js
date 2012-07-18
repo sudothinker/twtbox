@@ -23,7 +23,7 @@ app.configure('production', function(){
   redisPass = ""; // TODO: add the redis config. Removed for security
   domain = "http://twtbox.com";
   mp_client = new mixpanel.Client("f5b01baad731fa1f37a2fd7be9a1de44");
-  app.use(express.errorHandler()); 
+  app.use(express.errorHandler());
 });
 
 var redis = require('redis');
@@ -53,7 +53,7 @@ var socket = io.listen(app);
 var OAuth = require('./oauth').OAuth;
 var oa = new OAuth("http://api.rdio.com/oauth/request_token", "http://api.rdio.com/oauth/access_token",
                   "", "", // TODO: Add the rdio oauth tokens. Removed for security
-                  "1.0", domain + "/callback", "HMAC-SHA1");                  
+                  "1.0", domain + "/callback", "HMAC-SHA1");
 var rdioEndpoint = "http://api.rdio.com/1/";
 
 // Routes
@@ -78,7 +78,7 @@ var isMobile = function(req) {
 
 var loadAdmin = function(req, res, next) {
   if (req.session.oauth_access_token != undefined) {
-    oa.post(rdioEndpoint, req.session.oauth_access_token, req.session.oauth_access_token_secret, 
+    oa.post(rdioEndpoint, req.session.oauth_access_token, req.session.oauth_access_token_secret,
       { "method" : "currentUser" }, function (error, data) {
       req.admin = JSON.parse(data)["result"];
       next();
@@ -103,7 +103,7 @@ var createRoom = function() {
 
   for( var i=0; i < 3; i++ )
     text += possible.charAt(Math.floor(Math.random() * possible.length));
-  
+
   return text;
 };
 
@@ -147,21 +147,21 @@ app.get("/topsongs.json", adminRequired, function(req, res, next) {
 
 // admin view of room
 app.get('/r/:room', adminRequired, function(req, res, next) {
-  oa.post(rdioEndpoint, req.session.oauth_access_token, req.session.oauth_access_token_secret, 
+  oa.post(rdioEndpoint, req.session.oauth_access_token, req.session.oauth_access_token_secret,
     { "method" : "getPlaybackToken", "domain" : "twtbox.com" }, function (error, data) {
-    var playbackToken = domain == "http://localhost:3000" ? "GAlNi78J_____zlyYWs5ZG02N2pkaHlhcWsyOWJtYjkyN2xvY2FsaG9zdEbwl7EHvbylWSWFWYMZwfc=" : JSON.parse(data)["result"];    
-    
+    var playbackToken = domain == "http://localhost:3000" ? "GAlNi78J_____zlyYWs5ZG02N2pkaHlhcWsyOWJtYjkyN2xvY2FsaG9zdEbwl7EHvbylWSWFWYMZwfc=" : JSON.parse(data)["result"];
+
     var renderRoom = function(res, song, offset, playbackToken, domain) {
       res.render("room", {
         room: req.params.room,
-        song: song,        
+        song: song,
         mixpanel: mixpanel,
         offset: offset,
         playbackToken: playbackToken,
         domain: domain
       });
     };
-    
+
     rclient.get(getPlaying(req.params.room), function(err, playing) {
       if (playing == undefined) {
         rclient.lpop(getSongs(req.params.room), function(err, song) {
@@ -170,14 +170,14 @@ app.get('/r/:room', adminRequired, function(req, res, next) {
       } else {
         rclient.ttl(getPlaying(req.params.room), function(err, offset) {
           renderRoom(res, playing, offset, playbackToken, domain);
-        });        
+        });
       }
     });
   });
 });
 
 // json representation of the queue for the receiver
-app.get('/r/:room/queue.json', function(req, res, next) {  
+app.get('/r/:room/queue.json', function(req, res, next) {
   rclient.lrange(getSongs(req.params.room), 0, 100, function(err, queue) {
     res.send(queue);
   });
@@ -192,11 +192,11 @@ app.post('/join', function(req, res, next) {
   // } else {
     res.redirect('/r/' + req.body.room.toLowerCase() + '/q');
   // }
-  
+
 })
 
 // controller screen for queuing songs
-app.get('/r/:room/q', function(req, res, next) {  
+app.get('/r/:room/q', function(req, res, next) {
   res.render('queue', {
     room: req.params.room,
   });
@@ -205,9 +205,9 @@ app.get('/r/:room/q', function(req, res, next) {
 // Create a new name
 app.post('/name', function(req, res, next) {
   var name = req.body.twtboxname.toLowerCase();
-  
+
   sys.puts("Checking if " + name + " is already taken");
-  
+
   rclient.sismember("rooms", name, function(err, reply) {
     if (reply == 1) {
       // TODO: display an error
@@ -236,7 +236,7 @@ app.get('/authorize', getRequestToken, function(req, res, next) {
 
 app.get('/callback', function(req, res, next) {
   req.session.verifier = req.query.oauth_verifier
-  oa.getOAuthAccessToken(req.session.token, req.session.token_secret, req.session.verifier, 
+  oa.getOAuthAccessToken(req.session.token, req.session.token_secret, req.session.verifier,
     function(error, oauth_access_token, oauth_access_token_secret, results){
       if(error) sys.puts('error : ' + error)
       else {
@@ -256,7 +256,7 @@ var queueSong = function(song, room, client, callback) {
       client.emit("queued", {song: s, room: room});
     });
   }
-  
+
   if (song.key) {
     oa._performSecureRequest(null, null, "POST", rdioEndpoint, { "method": "get", "keys": song.key}, null, null, function(error, data, response) {
       if (data) {
@@ -268,13 +268,13 @@ var queueSong = function(song, room, client, callback) {
   } else if (song.title) {
     oa._performSecureRequest(null, null, "POST", rdioEndpoint, { "method": "search", "query": song.title, "types": "Track" }, null, null, function(error, data, response) {
       song = JSON.parse(data).result.results[0];
-      if (song != undefined) {    
+      if (song != undefined) {
         pushSong(song);
         callback(room, song);
       } else {
         sys.puts("Couldn't find any songs for: '" + query + "'");
       }
-    });    
+    });
   } else {
     sys.puts("No song to queue: " + sys.inspect(song));
   }
@@ -283,7 +283,7 @@ var queueSong = function(song, room, client, callback) {
 app.get('/suggestions', function(req, res, next) {
   var query = req.query.query;
   sys.puts("Performing search query for: " + query);
-  oa._performSecureRequest(null, null, "POST", rdioEndpoint, { "method": "search", "query": query, "types": "Track,Album", "count": 10 }, null, null, function(error, data, response) {    
+  oa._performSecureRequest(null, null, "POST", rdioEndpoint, { "method": "search", "query": query, "types": "Track,Album", "count": 10 }, null, null, function(error, data, response) {
     if (data) {
       var d = JSON.parse(data);
       if (d.status == 'error') return undefined;
@@ -303,11 +303,11 @@ app.get('/suggestions', function(req, res, next) {
 });
 
 var mixTrack = function(action, room, song) {
-  mp_client.track(action, {'room': room, 'artist': song.artist, 'title': song.name});        
+  mp_client.track(action, {'room': room, 'artist': song.artist, 'title': song.name});
 };
 
-socket.configure(function () { 
-  socket.set("transports", ["xhr-polling"]); 
+socket.configure(function () {
+  socket.set("transports", ["xhr-polling"]);
   socket.set("polling duration", 5);
   socket.set('log level', 1);
 });
@@ -321,7 +321,7 @@ socket.sockets.on('connection', function(client) {
       {next: {room: "abcd"}}
       {remove: {room: "abcd", song: {...}}}
   */
-  client.on('queue', function(data) {    
+  client.on('queue', function(data) {
     var broadcast = function(room, song) {
       client.broadcast.emit("queued", {room: room, song: song});
     }
@@ -330,18 +330,18 @@ socket.sockets.on('connection', function(client) {
   client.on('next', function(data) {
     rclient.set(client.id, data.room, function(err, reply) {
       rclient.sadd("rooms", data.room, function(err, reply) {
-    
+
       });
     });
-    
-    rclient.lpop(getSongs(data.room), function(err, song) {  
+
+    rclient.lpop(getSongs(data.room), function(err, song) {
       client.emit("play", JSON.parse(song));
     });
   });
   client.on('play', function(data) {
     mixTrack("playback", data.room, data.song);
     rclient.setex(getPlaying(data.room), parseInt(data.song.duration), JSON.stringify(data.song), function(err, reply) {
-      
+
     });
   });
   client.on('remove', function(data) {
@@ -349,7 +349,7 @@ socket.sockets.on('connection', function(client) {
       // removed..
     });
   });
-  
+
   // Kill the queue and free up the jukebox name
   client.on("disconnect", function() {
     rclient.get(client.id, function(err, room) {

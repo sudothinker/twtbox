@@ -18,7 +18,7 @@ var RedisStore = require('connect-redis')(express);
 
 var app = module.exports = express.createServer(express.logger());
 
-var domain, mp_client, hostname, redisHost, redisPort, redisPass, rclient;
+var domain, mp_client, hostname, rclient;
 
 var Redis = require('redis');
 var Url = require('url');
@@ -31,7 +31,6 @@ app.configure(function(){
   }
   domain = process.env.HEROKU_URL || "http://localhost:3000";
   hostname = Url.parse(domain).hostname;
-  console.log(hostname);
 });
 
 app.configure('development', function(){  

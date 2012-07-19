@@ -6,6 +6,7 @@
 //   HEROKU_URL
 //   RDIO_API_KEY
 //   RDIO_API_SECRET
+//   SESSION_SECRET
 //   
 
 var express = require('express');
@@ -50,7 +51,7 @@ app.configure(function(){
   app.use(express.methodOverride());
   app.use(express.compiler({ src: __dirname + '/public', enable: ['less'] }));
   app.use(express.cookieParser());
-  app.use(express.session({ store: new RedisStore({client: rclient}), secret: 'test' })); // TODO: Add secret, removed for security
+  app.use(express.session({ store: new RedisStore({client: rclient}), secret: process.env.SESSION_SECRET })); // TODO: Add secret, removed for security
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
 });

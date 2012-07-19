@@ -50,7 +50,7 @@ app.configure(function(){
   app.use(express.methodOverride());
   app.use(express.compiler({ src: __dirname + '/public', enable: ['less'] }));
   app.use(express.cookieParser());
-  app.use(express.session({ store: new RedisStore({client: rclient}), secret: process.env.SESSION_SECRET })); // TODO: Add secret, removed for security
+  app.use(express.session({ store: new RedisStore({client: rclient}), secret: process.env.SESSION_SECRET }));
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
 });
@@ -62,7 +62,7 @@ app.dynamicHelpers({
 var socket = io.listen(app);
 var OAuth = require('./oauth').OAuth;
 var oa = new OAuth("http://api.rdio.com/oauth/request_token", "http://api.rdio.com/oauth/access_token",
-                  process.env.RDIO_API_KEY, process.env.RDIO_API_SECRET, // TODO: Add the rdio oauth tokens. Removed for security
+                  process.env.RDIO_API_KEY, process.env.RDIO_API_SECRET,
                   "1.0", domain + "/callback", "HMAC-SHA1");                  
 var rdioEndpoint = "http://api.rdio.com/1/";
 
